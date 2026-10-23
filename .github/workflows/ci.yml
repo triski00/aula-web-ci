@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   comprobar-y-construir:
     runs-on: ubuntu-latest
@@ -18,7 +22,23 @@ jobs:
         run: test -f index.html
 
       - name: Comprobar Dockerfile
-        run: test -f Dockerfile
+        run: test -f dockerfile
 
       - name: Construir imagen Docker
         run: docker build -t aula-web:ci .
+
+      - name: Iniciar sesion en GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir y publicar imagen
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/triski00/aula-web-ci:latest
