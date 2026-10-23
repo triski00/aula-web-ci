@@ -22,7 +22,7 @@ jobs:
         run: test -f index.html
 
       - name: Comprobar Dockerfile
-        run: test -f dockerfile
+        run: test -f Dockerfile
 
       - name: Construir imagen Docker
         run: docker build -t aula-web:ci .
