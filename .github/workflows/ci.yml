@@ -1,0 +1,24 @@
+name: CI Web Docker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  comprobar-y-construir:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Comprobar index.html
+        run: test -f index.html
+
+      - name: Comprobar Dockerfile
+        run: test -f dockerfile
+
+      - name: Construir imagen Docker
+        run: docker build -t aula-web:ci .
